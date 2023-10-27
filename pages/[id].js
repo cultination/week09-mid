@@ -1,4 +1,3 @@
-import { getStaticProps } from 'next';
 import { fetchEventById, fetchEventIdsFromFirestore } from '../services/eventService';
 
 export async function getStaticPaths() {
