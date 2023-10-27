@@ -3,9 +3,9 @@ import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import 'firebase/auth';
-import ToDoItems from '../components/ToDoItems'; // Import your ToDoItems component here
-import Events from '../components/Events'; // Import your Events component here
-import Contacts from '../components/Contacts'; // Import your Contacts component here
+import ToDoItems from '../components/ToDoItems';
+import Events from '../components/Events';
+import Contacts from '../components/Contacts';
 
 const Home: NextPage = () => {
   return (
@@ -20,9 +20,9 @@ const Home: NextPage = () => {
         <h1 className={styles.title}>Welcome to Your App</h1>
 
         <div className={styles.grid}>
-          <ToDoItems /> {/* Render your ToDoItems component */}
-          <Events /> {/* Render your Events component */}
-          <Contacts /> {/* Render your Contacts component */}
+          <ToDoItems />
+          <Events />
+          <Contacts />
         </div>
       </main>
 

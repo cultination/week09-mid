@@ -1,28 +1,29 @@
 import React, { useState, useEffect } from 'react';
-import firebase from 'firebase/app';
-import 'firebase/firestore';
+import { app } from '../firebaseConfig';
+import { getFirestore, collection, addDoc, doc, updateDoc, deleteDoc, getDocs } from 'firebase/firestore';
 
 function Contacts() {
   const [contacts, setContacts] = useState([]);
-  const [newContact, setNewContact] = useState({ name: '', phone: '', email: '', address: '' });
+  const [newContactName, setNewContactName] = useState('');
+  const [newContactEmail, setNewContactEmail] = useState('');
+  const [newContactPhone, setNewContactPhone] = useState('');
   const [editContact, setEditContact] = useState(null);
 
-  // Fetch contacts from Firestore when the component loads
   useEffect(() => {
     const fetchData = async () => {
+      const db = getFirestore(app);
+      const contactsCollection = collection(db, 'contacts');
+
       try {
-        const user = firebase.auth().currentUser;
-        if (user) {
-          const snapshot = await firebase
-            .firestore()
-            .collection(`users/${user.uid}/contacts`)
-            .get();
-          const items = snapshot.docs.map((doc) => ({
+        const querySnapshot = await getDocs(contactsCollection);
+        const items = [];
+        querySnapshot.forEach((doc) => {
+          items.push({
             id: doc.id,
             ...doc.data(),
-          }));
-          setContacts(items);
-        }
+          });
+        });
+        setContacts(items);
       } catch (error) {
         console.error('Error fetching contacts:', error);
       }
@@ -31,51 +32,66 @@ function Contacts() {
     fetchData();
   }, []);
 
-  // Handle creating a new contact
   const handleCreateContact = async () => {
-    try {
-      const user = firebase.auth().currentUser;
-      if (user && newContact.name && newContact.phone && newContact.email) {
-        await firebase
-          .firestore()
-          .collection(`users/${user.uid}/contacts`)
-          .add({
-            name: newContact.name,
-            phone: newContact.phone,
-            email: newContact.email,
-            address: newContact.address,
-            // Add other contact fields as needed
-          });
+    if (!newContactName || !newContactEmail || !newContactPhone) return;
 
-        setNewContact({ name: '', phone: '', email: '', address: '' }); // Clear the input fields
-      }
+    const db = getFirestore(app);
+    const contactsCollection = collection(db, 'contacts');
+
+    try {
+      const docRef = await addDoc(contactsCollection, {
+        name: newContactName,
+        email: newContactEmail,
+        phone: newContactPhone,
+      });
+
+      setContacts((prevContacts) => [
+        ...prevContacts,
+        {
+          id: docRef.id,
+          name: newContactName,
+          email: newContactEmail,
+          phone: newContactPhone,
+        },
+      ]);
+
+      setNewContactName('');
+      setNewContactEmail('');
+      setNewContactPhone('');
     } catch (error) {
       console.error('Error creating contact:', error);
     }
   };
 
-  // Handle editing a contact
   const handleEditContact = async () => {
-    if (editContact) {
-      try {
-        const user = firebase.auth().currentUser;
-        if (user) {
-          await firebase
-            .firestore()
-            .doc(`users/${user.uid}/contacts/${editContact.id}`)
-            .update({
-              name: editContact.name,
-              phone: editContact.phone,
-              email: editContact.email,
-              address: editContact.address,
-              // Update other contact fields as needed
-            });
+    if (!editContact) return;
 
-          setEditContact(null); // Clear the editing state
-        }
-      } catch (error) {
-        console.error('Error editing contact:', error);
-      }
+    const db = getFirestore(app);
+    const contactDoc = doc(db, 'contacts', editContact.id);
+
+    try {
+      await updateDoc(contactDoc, {
+        name: editContact.name,
+        email: editContact.email,
+        phone: editContact.phone,
+      });
+
+      setEditContact(null);
+    } catch (error) {
+      console.error('Error editing contact:', error);
+    }
+  };
+
+  const handleDeleteContact = async (contact) => {
+    const db = getFirestore(app);
+    const contactDoc = doc(db, 'contacts', contact.id);
+
+    try {
+      await deleteDoc(contactDoc);
+
+      setContacts((prevContacts) => prevContacts.filter((item) => item.id !== contact.id));
+    } catch (error) {
+      console.error('Error deleting contact:', error);
     }
   };
 
@@ -89,32 +105,37 @@ function Contacts() {
               <div>
                 <input
                   type="text"
+                  placeholder="Name"
                   value={editContact.name}
-                  onChange={(e) => setEditContact({ ...editContact, name: e.target.value })}
+                  onChange={(e) =>
+                    setEditContact({ ...editContact, name: e.target.value })
+                  }
                 />
                 <input
                   type="text"
-                  value={editContact.phone}
-                  onChange={(e) => setEditContact({ ...editContact, phone: e.target.value })}
-                />
-                <input
-                  type="text"
+                  placeholder="Email"
                   value={editContact.email}
-                  onChange={(e) => setEditContact({ ...editContact, email: e.target.value })}
+                  onChange={(e) =>
+                    setEditContact({ ...editContact, email: e.target.value })
+                  }
                 />
                 <input
                   type="text"
-                  value={editContact.address}
-                  onChange={(e) => setEditContact({ ...editContact, address: e.target.value })}
+                  placeholder="Phone"
+                  value={editContact.phone}
+                  onChange={(e) =>
+                    setEditContact({ ...editContact, phone: e.target.value })
+                  }
                 />
-                {/* Add fields for other contact properties here */}
                 <button onClick={handleEditContact}>Save</button>
               </div>
             ) : (
               <div>
-                {contact.name} - {contact.email}
-                {/* Display other contact fields here */}
+                <strong>Name:</strong> {contact.name}<br />
+                <strong>Email:</strong> {contact.email}<br />
+                <strong>Phone:</strong> {contact.phone}
                 <button onClick={() => setEditContact(contact)}>Edit</button>
+                <button onClick={() => handleDeleteContact(contact)}>Delete</button>
               </div>
             )}
           </li>
@@ -123,30 +144,23 @@ function Contacts() {
       <div>
         <input
           type="text"
-          placeholder="Contact Name"
-          value={newContact.name}
-          onChange={(e) => setNewContact({ ...newContact, name: e.target.value })}
+          placeholder="Name"
+          value={newContactName}
+          onChange={(e) => setNewContactName(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Contact Phone"
-          value={newContact.phone}
-          onChange={(e) => setNewContact({ ...newContact, phone: e.target.value })}
+          placeholder="Email"
+          value={newContactEmail}
+          onChange={(e) => setNewContactEmail(e.target.value)}
         />
         <input
           type="text"
-          placeholder="Contact Email"
-          value={newContact.email}
-          onChange={(e) => setNewContact({ ...newContact, email: e.target.value })}
+          placeholder="Phone"
+          value={newContactPhone}
+          onChange={(e) => setNewContactPhone(e.target.value)}
         />
-        <input
-          type="text"
-          placeholder="Contact Address"
-          value={newContact.address}
-          onChange={(e) => setNewContact({ ...newContact, address: e.target.value })}
-        />
-        {/* Add fields for other contact properties here */}
-        <button onClick={handleCreateContact}>Create Contact</button>
+        <button onClick={handleCreateContact}>Create</button>
       </div>
     </div>
   );

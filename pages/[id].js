@@ -1,27 +1,22 @@
-// pages/[id].js
-
-import { getStaticPaths, getStaticProps } from 'next';
-import { fetchEventById, fetchEventIdsFromFirestore } from '../services/eventService'; // Import your fetchEventById and fetchEventIdsFromFirestore functions
+import { getStaticProps } from 'next';
+import { fetchEventById, fetchEventIdsFromFirestore } from '../services/eventService';
 
 export async function getStaticPaths() {
-  // Fetch the list of event IDs from Firestore
-  const eventIds = await fetchEventIdsFromFirestore(); // Implement this function
+  const eventIds = await fetchEventIdsFromFirestore();
 
-  // Generate dynamic paths based on the event IDs
   const paths = eventIds.map((id) => ({
     params: { id },
   }));
 
   return {
     paths,
-    fallback: false, // or 'blocking' or true
+    fallback: false,
   };
 }
 
 export async function getStaticProps({ params }) {
   const eventId = params.id;
 
-  // Fetch event details from Firestore using the eventId
   const event = await fetchEventById(eventId);
 
   return {
