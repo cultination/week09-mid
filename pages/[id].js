@@ -1,5 +1,17 @@
 import { fetchEventById, fetchEventIdsFromFirestore } from '../services/eventService';
 
+function DynamicPage({ event }) {
+  return (
+    <div>
+      <h1>Dynamic Page for ID: {event.id}</h1>
+      <h2>{event.title}</h2>
+      <p>{event.description}</p>
+    </div>
+  );
+}
+
+export default DynamicPage;
+
 export async function getStaticPaths() {
   const eventIds = await fetchEventIdsFromFirestore();
 
@@ -24,15 +36,3 @@ export async function getStaticProps({ params }) {
     },
   };
 }
-
-function DynamicPage({ event }) {
-  return (
-    <div>
-      <h1>Dynamic Page for ID: {event.id}</h1>
-      <h2>{event.title}</h2>
-      <p>{event.description}</p>
-    </div>
-  );
-}
-
-export default DynamicPage;
