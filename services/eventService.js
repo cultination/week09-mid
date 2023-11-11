@@ -29,6 +29,13 @@ export const fetchEventById = async (eventId) => {
   return { id: eventSnapshot.id, ...eventSnapshot.data() };
 };
 
+export const fetchEventIdsFromFirestore = async () => {
+  const eventsCollection = collection(db, 'events');
+  const eventsSnapshot = await getDocs(eventsCollection);
+  return eventsSnapshot.docs.map((doc) => doc.id);
+};
+
+
 // Function to add a new event
 export const addEvent = async (eventData) => {
   const eventsCollection = collection(db, 'events');

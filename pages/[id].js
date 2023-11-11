@@ -1,4 +1,4 @@
-import { fetchEventById } from '../services/eventService';
+import { fetchEventById, fetchEventIdsFromFirestore } from '../services/eventService';
 import { useEffect, useState } from 'react';
 
 function DynamicPage({ event }) {
