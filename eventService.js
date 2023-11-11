@@ -1,8 +1,12 @@
 import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+
+// Import Firebase configuration
 import firebaseConfig from './firebaseConfig';
 
 // Initialize Firebase and Firestore
-const db = getFirestore(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // Function to fetch all events
 export const fetchEvents = async () => {
@@ -44,6 +48,11 @@ export const addContact = async (contactData) => {
   const contactsCollection = collection(db, 'contacts');
   const newContactDocRef = await addDoc(contactsCollection, contactData);
   return newContactDocRef.id;
+};
+
+// Placeholder for fetchEventIdsFromFirestore
+export const fetchEventIdsFromFirestore = async () => {
+  // Your implementation goes here
 };
 
 // Function to fetch all todo items
