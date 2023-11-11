@@ -1,23 +1,22 @@
 import { fetchEventById } from '../services/eventService';
-import { initializeApp } from 'firebase/app';
-import { getFirestore } from 'firebase/firestore';
-import { app as firebaseApp } from '../services/firebaseConfig';
-
-const app = initializeApp(firebaseApp);
-const db = getFirestore(app);
-
-async function fetchEventIdsFromFirestore() {
-  const querySnapshot = await getDocs(collection(db, 'events'));
-  const eventIds = [];
-
-  querySnapshot.forEach((doc) => {
-    eventIds.push(doc.id);
-  });
-
-  return eventIds;
-}
+import { useEffect, useState } from 'react';
 
 function DynamicPage({ event }) {
+  const [isFirebaseInitialized, setIsFirebaseInitialized] = useState(false);
+
+  useEffect(() => {
+    if (!isFirebaseInitialized) {
+      import('../services/firebaseConfig').then(({ app }) => {
+        app();
+        setIsFirebaseInitialized(true);
+      });
+    }
+  }, [isFirebaseInitialized]);
+
+  if (!isFirebaseInitialized) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <div>
       <h1>Dynamic Page for ID: {event.id}</h1>
