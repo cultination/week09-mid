@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { fetchEvents } from '../services/eventService';
 import firebaseConfig from '../services/firebaseConfig';
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
+import { app, db } from '../services/firebaseConfig';
+
 
 function Events() {
   const [events, setEvents] = useState([]);
