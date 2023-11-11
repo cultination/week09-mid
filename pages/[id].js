@@ -1,4 +1,21 @@
 import { fetchEventById } from '../services/eventService';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
+import { app as firebaseApp } from '../services/firebaseConfig';
+
+const app = initializeApp(firebaseApp);
+const db = getFirestore(app);
+
+async function fetchEventIdsFromFirestore() {
+  const querySnapshot = await getDocs(collection(db, 'events'));
+  const eventIds = [];
+
+  querySnapshot.forEach((doc) => {
+    eventIds.push(doc.id);
+  });
+
+  return eventIds;
+}
 
 function DynamicPage({ event }) {
   return (
