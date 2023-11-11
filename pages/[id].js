@@ -1,4 +1,4 @@
-import { fetchEventById, fetchEventIdsFromFirestore } from '../eventService';
+import { fetchEventById, fetchEventIdsFromFirestore } from '..services/eventService';
 
 function DynamicPage({ event }) {
   return (
