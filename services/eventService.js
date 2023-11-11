@@ -1,8 +1,7 @@
 import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { app } from '../services/firebaseConfig';
-// Initialize Firebase and Firestore
-const app = initializeApp(firebaseConfig);
+
 const db = getFirestore(app);
 
 // Function to fetch all events
