@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { app, analytics } from './firebaseConfig';
-import { fetchEvents, fetchToDoItems } from './eventService';
+import { fetchToDoItems } from '../services/eventService';
+import firebaseConfig from '../services/firebaseConfig';
 
 function ToDoItems() {
   const [toDos, setToDos] = useState([]);

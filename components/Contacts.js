@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { app, analytics } from './firebaseConfig';
-import { fetchEvents, fetchToDoItems } from './eventService';
+import { fetchContacts } from '../services/eventService';
+import firebaseConfig from '../services/firebaseConfig';
 
 function Contacts() {
   const [contacts, setContacts] = useState([]);
