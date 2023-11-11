@@ -1,6 +1,7 @@
 import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
-import { analytics } from '..services/firebaseConfig';
+import { analytics } from '../services/firebaseConfig';
+import firebaseConfig from '../services/firebaseConfig';
 
 // Initialize Firebase and Firestore
 const app = initializeApp(firebaseConfig);

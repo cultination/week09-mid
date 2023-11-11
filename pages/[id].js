@@ -1,4 +1,6 @@
-import { fetchEventById, fetchEventIdsFromFirestore } from '..services/eventService';
+import { fetchEventById } from '../services/eventService';
+import { analytics } from '../services/firebaseConfig';
+
 
 function DynamicPage({ event }) {
   return (
