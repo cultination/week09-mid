@@ -1,11 +1,6 @@
-import { initializeApp, getApps, getApp } from 'firebase/app';
-import { getAnalytics } from 'firebase/analytics';
+import { initializeApp } from 'firebase/app';
+import { getFirestore } from 'firebase/firestore';
 
-let app;
-let analytics;
-
-if (typeof window !== 'undefined') {
-  if (!getApps().length) {
     const firebaseConfig = {
       apiKey: "AIzaSyDeIx46y88FO0-hbEY7ZG0C-QIQsAU4bLI",
       authDomain: "week09-89bc2.firebaseapp.com",
@@ -16,12 +11,7 @@ if (typeof window !== 'undefined') {
       measurementId: "G-419ZDQPR80"
     };
 
-    app = initializeApp(firebaseConfig);
-    analytics = getAnalytics(app);
-  } else {
-    app = getApp();
-    analytics = getAnalytics(app);
-  }
-}
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-export { app, analytics };
+    export { app, db };
