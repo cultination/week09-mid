@@ -38,6 +38,20 @@ export const fetchContactById = async (contactId) => {
   return { id: contactSnapshot.id, ...contactSnapshot.data() };
 };
 
+export const fetchEventIdsFromFirestore = async () => {
+  const db = getFirestore(app);
+  const eventsCollection = collection(db, 'events');
+
+  try {
+    const eventsSnapshot = await getDocs(eventsCollection);
+    const eventIds = eventsSnapshot.docs.map((doc) => doc.id);
+    return eventIds;
+  } catch (error) {
+    console.error('Error fetching event IDs from Firestore:', error);
+    return [];
+  }
+};
+
 // Function to add a new contact
 export const addContact = async (contactData) => {
   const contactsCollection = collection(db, 'contacts');
