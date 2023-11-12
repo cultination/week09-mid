@@ -45,11 +45,6 @@ export const addContact = async (contactData) => {
   return newContactDocRef.id;
 };
 
-// Placeholder for fetchEventIdsFromFirestore
-export const fetchEventIdsFromFirestore = async () => {
-  // Your implementation goes here
-};
-
 // Function to fetch all todo items
 export const fetchToDoItems = async () => {
   const todoItemsCollection = collection(db, 'todoitems');
