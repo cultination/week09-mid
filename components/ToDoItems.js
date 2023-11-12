@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { fetchToDoItems } from '../services/eventService';
-import firebaseConfig from '../services/firebaseConfig';
 import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { app } from '../services/firebaseConfig';
 
 export const fetchToDoItems = async () => {
-const db = getFirestore(app);
-const toDoCollection = collection(db, 'todoitems');
+  const db = getFirestore(app);
+  const toDoCollection = collection(db, 'todoitems');
 
   try {
     const querySnapshot = await getDocs(toDoCollection);
