@@ -1,8 +1,27 @@
 import React, { useState, useEffect } from 'react';
 import { fetchToDoItems } from '../services/eventService';
 import firebaseConfig from '../services/firebaseConfig';
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
-import { app, db } from '../services/firebaseConfig';
+import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+
+export const fetchToDoItems = async () => {
+const db = getFirestore(app);
+const toDoCollection = collection(db, 'todoitems');
+
+  try {
+    const querySnapshot = await getDocs(toDoCollection);
+    const items = [];
+    querySnapshot.forEach((doc) => {
+      items.push({
+        id: doc.id,
+        ...doc.data(),
+      });
+    });
+    return items;
+  } catch (error) {
+    console.error('Error fetching to-do items:', error);
+    return [];
+  }
+};
 
 
 function ToDoItems() {

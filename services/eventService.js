@@ -1,18 +1,6 @@
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
-import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs, doc, addDoc } from 'firebase/firestore';
+import { app } from '../services/firebaseConfig';
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDeIx46y88FO0-hbEY7ZG0C-QIQsAU4bLI",
-  authDomain: "week09-89bc2.firebaseapp.com",
-  projectId: "week09-89bc2",
-  storageBucket: "week09-89bc2.appspot.com",
-  messagingSenderId: "848489998994",
-  appId: "1:848489998994:web:0be03b9a27fe1dee24544b",
-  measurementId: "G-419ZDQPR80"
-};
-
-// Initialize Firebase app
-const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 // Function to fetch all events
@@ -28,13 +16,6 @@ export const fetchEventById = async (eventId) => {
   const eventSnapshot = await getDoc(eventDoc);
   return { id: eventSnapshot.id, ...eventSnapshot.data() };
 };
-
-export const fetchEventIdsFromFirestore = async () => {
-  const eventsCollection = collection(db, 'events');
-  const eventsSnapshot = await getDocs(eventsCollection);
-  return eventsSnapshot.docs.map((doc) => doc.id);
-};
-
 
 // Function to add a new event
 export const addEvent = async (eventData) => {
@@ -64,6 +45,11 @@ export const addContact = async (contactData) => {
   return newContactDocRef.id;
 };
 
+// Placeholder for fetchEventIdsFromFirestore
+export const fetchEventIdsFromFirestore = async () => {
+  // Your implementation goes here
+};
+
 // Function to fetch all todo items
 export const fetchToDoItems = async () => {
   const todoItemsCollection = collection(db, 'todoitems');
@@ -83,11 +69,4 @@ export const addToDoItem = async (todoItemData) => {
   const todoItemsCollection = collection(db, 'todoitems');
   const newToDoItemDocRef = await addDoc(todoItemsCollection, todoItemData);
   return newToDoItemDocRef.id;
-};
-
-// Function to fetch all event IDs
-export const fetchEventIdsFromFirestore = async () => {
-  const eventsCollection = collection(db, 'events');
-  const eventsSnapshot = await getDocs(eventsCollection);
-  return eventsSnapshot.docs.map((doc) => doc.id);
 };
