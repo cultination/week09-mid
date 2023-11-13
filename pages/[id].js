@@ -1,20 +1,23 @@
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
-import { fetchEventById, fetchEventIdsFromFirestore } from '../services/eventService';
+import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { useEffect, useState } from 'react';
+import { initializeApp } from '../services/firebaseConfig';
+
 function DynamicPage({ event }) {
   const [isFirebaseInitialized, setIsFirebaseInitialized] = useState(false);
 
   useEffect(() => {
     if (!isFirebaseInitialized) {
-      import('../services/firebaseConfig').then(({ app }) => {
-        app();
-        setIsFirebaseInitialized(true);
-      });
+      initializeApp();
+      setIsFirebaseInitialized(true);
     }
   }, [isFirebaseInitialized]);
 
   if (!isFirebaseInitialized) {
     return <p>Loading...</p>;
+  }
+
+  if (!event) {
+    return <p>Event not found</p>;
   }
 
   return (
@@ -29,11 +32,16 @@ function DynamicPage({ event }) {
 export default DynamicPage;
 
 export async function getStaticPaths() {
-  const eventIds = await fetchEventIdsFromFirestore();
+  const db = getFirestore();
+  const eventsCollection = collection(db, 'events');
+  const querySnapshot = await getDocs(eventsCollection);
 
-  const paths = eventIds.map((id) => ({
-    params: { id },
-  }));
+  const paths = [];
+  querySnapshot.forEach((doc) => {
+    paths.push({
+      params: { id: doc.id },
+    });
+  });
 
   return {
     paths,
@@ -42,9 +50,10 @@ export async function getStaticPaths() {
 }
 
 export async function getStaticProps({ params }) {
-  const eventId = params.id;
-
-  const event = await fetchEventById(eventId);
+  const db = getFirestore();
+  const eventDoc = doc(db, 'events', params.id);
+  const eventSnapshot = await getDoc(eventDoc);
+  const event = eventSnapshot.data();
 
   return {
     props: {
