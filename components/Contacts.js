@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { fetchContacts } from '../services/eventService';
-import firebaseConfig from '../services/firebaseConfig';
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
-import { app, db } from '../services/firebaseConfig';
-
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+import { app } from '../services/firebaseConfig';
+import { VStack, Box, FormControl, Input, Button } from '@chakra-ui/react';
 
 function Contacts() {
   const [contacts, setContacts] = useState([]);
@@ -52,9 +58,11 @@ function Contacts() {
         ...prevContacts,
         {
           id: docRef.id,
-          name: newContactName,
-          email: newContactEmail,
-          phone: newContactPhone,
+          ...{
+            name: newContactName,
+            email: newContactEmail,
+            phone: newContactPhone,
+          },
         },
       ]);
 
@@ -92,80 +100,95 @@ function Contacts() {
     try {
       await deleteDoc(contactDoc);
 
-      setContacts((prevContacts) => prevContacts.filter((item) => item.id !== contact.id));
+      setContacts((prevContacts) =>
+        prevContacts.filter((item) => item.id !== contact.id)
+      );
     } catch (error) {
       console.error('Error deleting contact:', error);
     }
   };
 
   return (
-    <div>
+    <VStack align="start" spacing={4}>
       <h2>Contacts</h2>
-      <ul>
+      <Box>
         {contacts.map((contact) => (
-          <li key={contact.id}>
+          <Box key={contact.id}>
             {editContact === contact ? (
-              <div>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={editContact.name}
-                  onChange={(e) =>
-                    setEditContact({ ...editContact, name: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  placeholder="Email"
-                  value={editContact.email}
-                  onChange={(e) =>
-                    setEditContact({ ...editContact, email: e.target.value })
-                  }
-                />
-                <input
-                  type="text"
-                  placeholder="Phone"
-                  value={editContact.phone}
-                  onChange={(e) =>
-                    setEditContact({ ...editContact, phone: e.target.value })
-                  }
-                />
-                <button onClick={handleEditContact}>Save</button>
-              </div>
+              <VStack spacing={2}>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Name"
+                    value={editContact.name}
+                    onChange={(e) =>
+                      setEditContact({ ...editContact, name: e.target.value })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Email"
+                    value={editContact.email}
+                    onChange={(e) =>
+                      setEditContact({ ...editContact, email: e.target.value })
+                    }
+                  />
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type="text"
+                    placeholder="Phone"
+                    value={editContact.phone}
+                    onChange={(e) =>
+                      setEditContact({ ...editContact, phone: e.target.value })
+                    }
+                  />
+                </FormControl>
+                <Button onClick={handleEditContact}>Save</Button>
+              </VStack>
             ) : (
-              <div>
+              <VStack spacing={2}>
                 <strong>Name:</strong> {contact.name}<br />
                 <strong>Email:</strong> {contact.email}<br />
                 <strong>Phone:</strong> {contact.phone}
-                <button onClick={() => setEditContact(contact)}>Edit</button>
-                <button onClick={() => handleDeleteContact(contact)}>Delete</button>
-              </div>
+                <Button onClick={() => setEditContact(contact)}>Edit</Button>
+                <Button onClick={() => handleDeleteContact(contact)}>Delete</Button>
+              </VStack>
             )}
-          </li>
+          </Box>
         ))}
-      </ul>
-      <div>
-        <input
-          type="text"
-          placeholder="Name"
-          value={newContactName}
-          onChange={(e) => setNewContactName(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Email"
-          value={newContactEmail}
-          onChange={(e) => setNewContactEmail(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Phone"
-          value={newContactPhone}
-          onChange={(e) => setNewContactPhone(e.target.value)}
-        />
-        <button onClick={handleCreateContact}>Create</button>
-      </div>
-    </div>
+      </Box>
+
+      <VStack spacing={2}>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Name"
+            value={newContactName}
+            onChange={(e) => setNewContactName(e.target.value)}
+          />
+        </FormControl>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Email"
+            value={newContactEmail}
+            onChange={(e) => setNewContactEmail(e.target.value)}
+          />
+        </FormControl>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Phone"
+            value={newContactPhone}
+            onChange={(e) => setNewContactPhone(e.target.value)}
+          />
+        </FormControl>
+        <Button onClick={handleCreateContact}>Create</Button>
+      </VStack>
+    </VStack>
   );
 }
 

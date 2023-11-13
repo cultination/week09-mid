@@ -1,6 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { getFirestore, collection, getDocs, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
 import { app } from '../services/firebaseConfig';
+import { VStack, HStack, Box, FormControl, Input, Button } from '@chakra-ui/react';
 
 export const fetchToDoItems = async () => {
   const db = getFirestore(app);
@@ -21,7 +30,6 @@ export const fetchToDoItems = async () => {
     return [];
   }
 };
-
 
 function ToDoItems() {
   const [toDos, setToDos] = useState([]);
@@ -117,65 +125,79 @@ function ToDoItems() {
   };
 
   return (
-    <div>
+    <VStack align="start" spacing={4}>
       <h2>To-Do Items</h2>
-      <ul>
+      <Box>
         {toDos.map((toDo) => (
-          <li key={toDo.id}>
+          <Box key={toDo.id}>
             {editToDo === toDo ? (
-              <div>
-                <input
-                  type="text"
-                  value={editToDo.description}
-                  onChange={(e) => setEditToDo({ ...editToDo, description: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editToDo.dueDate}
-                  onChange={(e) => setEditToDo({ ...editToDo, dueDate: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editToDo.priority}
-                  onChange={(e) => setEditToDo({ ...editToDo, priority: e.target.value })}
-                />
-                <button onClick={handleEditToDo}>Save</button>
-              </div>
+              <VStack spacing={2}>
+                <FormControl>
+                  <Input
+                    type="text"
+                    value={editToDo.description}
+                    onChange={(e) => setEditToDo({ ...editToDo, description: e.target.value })}
+                  />
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type="text"
+                    value={editToDo.dueDate}
+                    onChange={(e) => setEditToDo({ ...editToDo, dueDate: e.target.value })}
+                  />
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type="text"
+                    value={editToDo.priority}
+                    onChange={(e) => setEditToDo({ ...editToDo, priority: e.target.value })}
+                  />
+                </FormControl>
+                <Button onClick={handleEditToDo}>Save</Button>
+              </VStack>
             ) : (
-              <div>
+              <VStack spacing={2}>
                 <strong>{toDo.description}</strong>
                 <p>Due Date: {toDo.dueDate}</p>
                 <p>Priority: {toDo.priority}</p>
-                <button onClick={() => setEditToDo(toDo)}>Edit</button>
-                <button onClick={() => handleDeleteToDo(toDo)}>Delete</button>
-              </div>
+                <HStack spacing={2}>
+                  <Button onClick={() => setEditToDo(toDo)}>Edit</Button>
+                  <Button onClick={() => handleDeleteToDo(toDo)}>Delete</Button>
+                </HStack>
+              </VStack>
             )}
-          </li>
+          </Box>
         ))}
-      </ul>
+      </Box>
 
-      <div>
-        <input
-          type="text"
-          placeholder="Description"
-          value={newToDoDescription}
-          onChange={(e) => setNewToDoDescription(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Due Date"
-          value={newToDoDueDate}
-          onChange={(e) => setNewToDoDueDate(e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Priority"
-          value={newToDoPriority}
-          onChange={(e) => setNewToDoPriority(e.target.value)}
-        />
-        <button onClick={handleCreateToDo}>Create</button>
-      </div>
-    </div>
+      <VStack spacing={2}>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Description"
+            value={newToDoDescription}
+            onChange={(e) => setNewToDoDescription(e.target.value)}
+          />
+        </FormControl>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Due Date"
+            value={newToDoDueDate}
+            onChange={(e) => setNewToDoDueDate(e.target.value)}
+          />
+        </FormControl>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Priority"
+            value={newToDoPriority}
+            onChange={(e) => setNewToDoPriority(e.target.value)}
+          />
+        </FormControl>
+        <Button onClick={handleCreateToDo}>Create</Button>
+      </VStack>
+    </VStack>
   );
 }
 

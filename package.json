@@ -9,6 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@chakra-ui/icons": "^2.1.1",
+    "@chakra-ui/react": "^2.8.2",
     "@firebase/firestore": "^4.3.0",
     "firebase": "^10.5.2",
     "next": "^13.5.1",

@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { fetchEvents } from '../services/eventService';
-import firebaseConfig from '../services/firebaseConfig';
-import { getFirestore, collection, getDocs, doc, getDoc, addDoc } from 'firebase/firestore';
-import { app, db } from '../services/firebaseConfig';
-
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+} from 'firebase/firestore';
+import { app } from '../services/firebaseConfig';
+import { VStack, Box, FormControl, Input, Button, HStack } from '@chakra-ui/react'; // Added HStack import
 
 function Events() {
   const [events, setEvents] = useState([]);
@@ -95,77 +101,95 @@ function Events() {
   };
 
   return (
-    <div>
+    <VStack align="start" spacing={4}>
       <h2>Events</h2>
-      <ul>
+      <Box>
         {events.map((event) => (
-          <li key={event.id}>
+          <Box key={event.id}>
             {editEvent === event ? (
-              <div>
-                <input
-                  type="text"
-                  value={editEvent.title}
-                  onChange={(e) => setEditEvent({ ...editEvent, title: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editEvent.date}
-                  onChange={(e) => setEditEvent({ ...editEvent, date: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editEvent.location}
-                  onChange={(e) => setEditEvent({ ...editEvent, location: e.target.value })}
-                />
-                <input
-                  type="text"
-                  value={editEvent.description}
-                  onChange={(e) => setEditEvent({ ...editEvent, description: e.target.value })}
-                />
-                <button onClick={handleEditEvent}>Save</button>
-              </div>
+              <VStack spacing={2}>
+                <FormControl>
+                  <Input
+                    type="text"
+                    value={editEvent.title}
+                    onChange={(e) => setEditEvent({ ...editEvent, title: e.target.value })}
+                  />
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type="text"
+                    value={editEvent.date}
+                    onChange={(e) => setEditEvent({ ...editEvent, date: e.target.value })}
+                  />
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type="text"
+                    value={editEvent.location}
+                    onChange={(e) => setEditEvent({ ...editEvent, location: e.target.value })}
+                  />
+                </FormControl>
+                <FormControl>
+                  <Input
+                    type="text"
+                    value={editEvent.description}
+                    onChange={(e) => setEditEvent({ ...editEvent, description: e.target.value })}
+                  />
+                </FormControl>
+                <Button onClick={handleEditEvent}>Save</Button>
+              </VStack>
             ) : (
-              <div>
+              <VStack spacing={2}>
                 <strong>{event.title}</strong>
                 <p>Date: {event.date}</p>
                 <p>Location: {event.location}</p>
                 <p>Description: {event.description}</p>
-                <button onClick={() => setEditEvent(event)}>Edit</button>
-                <button onClick={() => handleDeleteEvent(event)}>Delete</button>
-              </div>
+                <HStack spacing={2}>
+                  <Button onClick={() => setEditEvent(event)}>Edit</Button>
+                  <Button onClick={() => handleDeleteEvent(event)}>Delete</Button>
+                </HStack>
+              </VStack>
             )}
-          </li>
+          </Box>
         ))}
-      </ul>
+      </Box>
 
-      <div>
-        <input
-          type="text"
-          placeholder="Title"
-          value={newEvent.title}
-          onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Date"
-          value={newEvent.date}
-          onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Location"
-          value={newEvent.location}
-          onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Description"
-          value={newEvent.description}
-          onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
-        />
-        <button onClick={handleCreateEvent}>Create</button>
-      </div>
-    </div>
+      <VStack spacing={2}>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Title"
+            value={newEvent.title}
+            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+          />
+        </FormControl>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Date"
+            value={newEvent.date}
+            onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+          />
+        </FormControl>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Location"
+            value={newEvent.location}
+            onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+          />
+        </FormControl>
+        <FormControl>
+          <Input
+            type="text"
+            placeholder="Description"
+            value={newEvent.description}
+            onChange={(e) => setNewEvent({ ...newEvent, description: e.target.value })}
+          />
+        </FormControl>
+        <Button onClick={handleCreateEvent}>Create</Button>
+      </VStack>
+    </VStack>
   );
 }
 
