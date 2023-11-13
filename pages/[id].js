@@ -1,6 +1,6 @@
+import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
 import { fetchEventById, fetchEventIdsFromFirestore } from '../services/eventService';
 import { useEffect, useState } from 'react';
-
 function DynamicPage({ event }) {
   const [isFirebaseInitialized, setIsFirebaseInitialized] = useState(false);
 
