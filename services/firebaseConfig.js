@@ -13,5 +13,6 @@ import { getFirestore } from 'firebase/firestore';
 
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
+    const firestore = getFirestore(app);
 
-    export { app, db };
+    export { app, firestore, initializeApp, db };
